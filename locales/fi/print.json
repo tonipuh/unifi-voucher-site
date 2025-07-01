@@ -1,0 +1,15 @@
+{
+  "title": "WiFi koodisi on",
+  "connect": "Yhdistä verkkoon",
+  "password": "Salasana",
+  "or": "tai",
+  "scan": "Skannaa yhdistääksesi",
+  "details": "Voucherin tiedot",
+  "type": "Tyyppi",
+  "multiUse": "MK",
+  "singleUse": "YK",
+  "duration": "Kesto",
+  "dataLimit": "Datakatto",
+  "downloadLimit": "Latauskatto",
+  "uploadLimit": "Lähetyskatto"
+}

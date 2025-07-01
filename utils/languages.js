@@ -2,11 +2,12 @@
  * Exports all languages
  */
 module.exports = {
-    en: 'English',
-    de: 'German',
     da: 'Danish',
-    fr: 'French',
     nl: 'Dutch',
+    en: 'English',
+    fi: 'Finnish',
+    fr: 'French',
+    de: 'German',
     es: 'Spanish',
     pl: 'Polish',
     ru: 'Russian'

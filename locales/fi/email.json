@@ -1,0 +1,19 @@
+{
+  "title": "WiFi-voucher-koodi",
+  "preHeader": "WiFi-voucher-koodisi",
+  "greeting": "Hei",
+  "intro": "Joku loi WiFi-voucherin, käytä tätä koodia yhdistäessäsi",
+  "connect": "Yhdistä verkkoon",
+  "password": "Salasana",
+  "or": "tai",
+  "scan": "Skannaa yhdistääksesi",
+  "details": "Voucherin tiedot",
+  "type": "Tyyppi",
+  "multiUse": "Monikäyttöinen",
+  "singleUse": "Yksittäiskäyttöinen",
+  "duration": "Kesto",
+  "dataLimit": "Datakatto",
+  "downloadLimit": "Latauskatto",
+  "uploadLimit": "Lähetyskatto",
+  "poweredBy": "Tuotettu palvelulla"
+}
