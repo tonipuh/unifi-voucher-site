@@ -518,6 +518,13 @@ if(variables.serviceWeb) {
 
         const user = req.oidc ? await req.oidc.fetchUserInfo() : { email: 'admin' };
 
+        // Get unique note values for the filter dropdown
+        const noteOptions = [...new Set(cache.vouchers
+            .map(voucher => voucher.note)
+            .filter(note => note && note.trim() !== '')
+            .sort()
+        )];
+
         res.render('voucher', {
             baseUrl: req.headers['x-ingress-path'] ? req.headers['x-ingress-path'] : '',
             gitTag: variables.gitTag,
@@ -560,6 +567,12 @@ if(variables.serviceWeb) {
                 }
 
                 return true;
+            }).filter((item) => {
+                if(req.query.note && req.query.note !== 'all') {
+                    return item.note === req.query.note;
+                }
+
+                return true;
             }).sort((a, b) => {
                 if(req.query.sort === 'code') {
                     if (a.code > b.code) return -1;
@@ -584,8 +597,10 @@ if(variables.serviceWeb) {
             updated: cache.updated,
             filters: {
                 status: req.query.status,
-                quota: req.query.quota
+                quota: req.query.quota,
+                note: req.query.note
             },
+            noteOptions: noteOptions,
             sort: req.query.sort
         });
     });
@@ -633,6 +648,66 @@ if(variables.serviceWeb) {
             return;
         }
 
+        // Get unique note values for the filter dropdown (same as main page)
+        const noteOptions = [...new Set(cache.vouchers
+            .map(voucher => voucher.note)
+            .filter(note => note && note.trim() !== '')
+            .sort()
+        )];
+
+        // Apply the same filtering logic as the main page
+        const filteredVouchers = cache.vouchers.filter((item) => {
+            if(req.query.status === 'available') {
+                return item.used === 0 && item.status !== 'EXPIRED';
+            }
+
+            if(req.query.status === 'in-use') {
+                return item.used > 0 && item.status !== 'EXPIRED';
+            }
+
+            if(req.query.status === 'expired') {
+                return item.status === 'EXPIRED';
+            }
+
+            return true;
+        }).filter((item) => {
+            if(req.query.quota === 'multi-use') {
+                return item.quota === 0;
+            }
+
+            if(req.query.quota === 'single-use') {
+                return item.quota !== 0;
+            }
+
+            return true;
+        }).filter((item) => {
+            if(req.query.note && req.query.note !== 'all') {
+                return item.note === req.query.note;
+            }
+
+            return true;
+        }).sort((a, b) => {
+            if(req.query.sort === 'code') {
+                if (a.code > b.code) return -1;
+                if (a.code < b.code) return 1;
+            }
+
+            if(req.query.sort === 'note') {
+                if ((a.note || '') > (b.note || '')) return -1;
+                if ((a.note || '') < (b.note || '')) return 1;
+            }
+
+            if(req.query.sort === 'duration') {
+                if (a.duration > b.duration) return -1;
+                if (a.duration < b.duration) return 1;
+            }
+
+            if(req.query.sort === 'status') {
+                if (a.used > b.used) return -1;
+                if (a.used < b.used) return 1;
+            }
+        });
+
         res.render('components/bulk-print', {
             baseUrl: req.headers['x-ingress-path'] ? req.headers['x-ingress-path'] : '',
             timeConvert: time,
@@ -640,7 +715,14 @@ if(variables.serviceWeb) {
             languages,
             defaultLanguage: variables.translationDefault,
             printers: variables.printers.split(','),
-            vouchers: cache.vouchers,
+            vouchers: filteredVouchers,
+            noteOptions: noteOptions,
+            filters: {
+                status: req.query.status,
+                quota: req.query.quota,
+                note: req.query.note
+            },
+            sort: req.query.sort,
             updated: cache.updated
         });
     });

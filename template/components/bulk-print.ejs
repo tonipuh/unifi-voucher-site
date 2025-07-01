@@ -39,10 +39,16 @@
                                             </div>
                                         </div>
                                         <div>
+                                            <div class="flex items-center justify-between">
                                             <span class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Vouchers</span>
+                                                <div class="flex space-x-2">
+                                                    <button type="button" id="select-all" class="text-xs text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">Select All</button>
+                                                    <button type="button" id="deselect-all" class="text-xs text-gray-600 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300">Deselect All</button>
+                                                </div>
+                                            </div>
                                             <ul role="list" class="max-h-96 h-96 overflow-y-auto mt-2 rounded-md border-0 divide-y divide-black/5 dark:divide-white/5 dark:bg-white/5 ring-1 ring-inset ring-gray-300 dark:ring-white/10">
                                                 <% vouchers.forEach((voucher) => { %>
-                                                    <li class="relative flex items-center space-x-4 px-4 py-4">
+                                                    <li class="relative flex items-center space-x-4 px-4 py-4 voucher-item" data-note="<%= voucher.note || '' %>">
                                                         <input id="voucher-<%= voucher._id %>" aria-describedby="voucher-<%= voucher._id %>" name="vouchers" type="checkbox" value="<%= voucher._id %>" class="col-start-1 row-start-1 appearance-none rounded-sm border-0 dark:bg-white/5 ring-1 ring-inset ring-gray-300 dark:ring-white/10 focus:ring-2 focus:ring-sky-600 focus:ring-offset-0">
                                                         <label for="voucher-<%= voucher._id %>" class="voucher min-w-0 flex-auto">
                                                             <div class="flex items-center gap-x-3">

@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      UNIFI_IP: '192.168.1.1'
+      UNIFI_IP: '192.168.2.1'
       UNIFI_PORT: 443
       UNIFI_USERNAME: 'admin'
       UNIFI_PASSWORD: 'password'
@@ -24,7 +24,8 @@ services:
       VOUCHER_CUSTOM: 'true'
       SERVICE_WEB: 'true'
       SERVICE_API: 'false'
-      PRINTERS: ''
+      PRINTERS: 'pdf'
+      PAPER_SIZE: 'A6'
       SMTP_FROM: ''
       SMTP_HOST: ''
       SMTP_PORT: ''

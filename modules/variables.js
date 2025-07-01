@@ -45,5 +45,6 @@ module.exports = {
     translationDefault: config('translation_default') || process.env.TRANSLATION_DEFAULT || 'en',
     translationDebug: config('translation_debug') || (process.env.TRANSLATION_DEBUG === 'true') || false,
     gitTag: process.env.GIT_TAG || 'master',
-    gitBuild: fs.existsSync('/etc/unifi_voucher_site_build') ? fs.readFileSync('/etc/unifi_voucher_site_build', 'utf-8') : 'Development'
+    gitBuild: fs.existsSync('/etc/unifi_voucher_site_build') ? fs.readFileSync('/etc/unifi_voucher_site_build', 'utf-8') : 'Development',
+    paperSize: process.env.PAPER_SIZE ? process.env.PAPER_SIZE : 226.77165354330398,
 };

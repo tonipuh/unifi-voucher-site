@@ -88,6 +88,15 @@
                                     </select>
                                 </div>
                                 <div class="flex flex-col">
+                                    <label for="note" class="text-xs text-gray-900 dark:text-white mb-1">Note</label>
+                                    <select id="note" name="note" class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 dark:text-white dark:bg-white/5 ring-1 ring-inset ring-gray-300 dark:ring-white/10 focus:ring-2 focus:ring-sky-600 sm:text-sm sm:leading-6 **:text-black" aria-label="Filter by note">
+                                        <option value="all"<%= filters.note === 'all' ? ' selected' : '' %>>All</option>
+                                        <% noteOptions.forEach((note) => { %>
+                                            <option value="<%= note %>"<%= filters.note === note ? ' selected' : '' %>><%= note %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col">
                                     <label for="sort" class="text-xs text-gray-900 dark:text-white mb-1">Sort</label>
                                     <select id="sort" name="sort" class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 dark:text-white dark:bg-white/5 ring-1 ring-inset ring-gray-300 dark:ring-white/10 focus:ring-2 focus:ring-sky-600 sm:text-sm sm:leading-6 **:text-black" aria-label="Sort by">
                                         <option value="date"<%= sort === 'date' ? ' selected' : '' %>>Date</option>
@@ -456,6 +465,7 @@
             const filterSortForm = document.querySelector('#filter-sort-form');
             const statusFilter = document.querySelector('#status');
             const quotaFilter = document.querySelector('#quota');
+            const noteFilter = document.querySelector('#note');
             const sort = document.querySelector('#sort');
 
             const clearDetailDialog = () => {
@@ -589,12 +599,40 @@
                 });
             });
             bulkPrint.addEventListener('click', async () => {
-                const htmlRes = await fetch(`<%= baseUrl %>/bulk/print`);
+                // Build query string with current filters
+                const currentUrl = new URL(window.location.href);
+                const queryParams = new URLSearchParams();
+
+                // Add current filters to query params
+                if (currentUrl.searchParams.get('status') && currentUrl.searchParams.get('status') !== 'all') {
+                    queryParams.set('status', currentUrl.searchParams.get('status'));
+                }
+                if (currentUrl.searchParams.get('quota') && currentUrl.searchParams.get('quota') !== 'all') {
+                    queryParams.set('quota', currentUrl.searchParams.get('quota'));
+                }
+                if (currentUrl.searchParams.get('note') && currentUrl.searchParams.get('note') !== 'all') {
+                    queryParams.set('note', currentUrl.searchParams.get('note'));
+                }
+                if (currentUrl.searchParams.get('sort') && currentUrl.searchParams.get('sort') !== 'date') {
+                    queryParams.set('sort', currentUrl.searchParams.get('sort'));
+                }
+
+                const queryString = queryParams.toString();
+                const bulkPrintUrl = `<%= baseUrl %>/bulk/print${queryString ? '?' + queryString : ''}`;
+
+                const htmlRes = await fetch(bulkPrintUrl);
 
                 if(htmlRes.status === 200 && !htmlRes.redirected) {
-                    bulkPrintDialog.innerHTML = await htmlRes.text();
+                    const htmlContent = await htmlRes.text();
+                    bulkPrintDialog.innerHTML = htmlContent;
+
                     document.querySelector('#close').addEventListener('click', clearBulkPrintDialog);
                     document.querySelector('#overlay').addEventListener('click', clearBulkPrintDialog);
+
+                    // Initialize bulk print functionality after dialog is loaded
+                    setTimeout(() => {
+                        initializeBulkPrintFunctionality();
+                    }, 100);
                 } else {
                     window.location.reload();
                 }
@@ -605,9 +643,92 @@
             quotaFilter.addEventListener('change', () => {
                 filterSortForm.submit();
             });
+            noteFilter.addEventListener('change', () => {
+                filterSortForm.submit();
+            });
             sort.addEventListener('change', () => {
                 filterSortForm.submit();
             });
+
+            const initializeBulkPrintFunctionality = () => {
+                // Get elements for bulk print
+                const voucherItems = document.querySelectorAll('.voucher-item');
+                const selectAllBtn = document.getElementById('select-all');
+                const deselectAllBtn = document.getElementById('deselect-all');
+
+                // Check if elements are in the dialog
+                const dialog = document.querySelector('[role="dialog"]');
+
+                // Use elements from dialog if available
+                const finalSelectAllBtn = dialog ? dialog.querySelector('#select-all') : selectAllBtn;
+                const finalDeselectAllBtn = dialog ? dialog.querySelector('#deselect-all') : deselectAllBtn;
+                const finalVoucherItems = dialog ? dialog.querySelectorAll('.voucher-item') : voucherItems;
+
+                function selectAllVisible() {
+                    let selectedCount = 0;
+
+                    finalVoucherItems.forEach((item) => {
+                        const checkbox = item.querySelector('input[name="vouchers"]');
+
+                        if (item.style.display !== 'none' && !checkbox.disabled && !checkbox.checked) {
+                            checkbox.checked = true;
+                            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                            selectedCount++;
+                        }
+                    });
+
+                    showNotification(`Selected ${selectedCount} voucher(s)`, 'success');
+                }
+
+                function deselectAll() {
+                    let deselectedCount = 0;
+
+                    finalVoucherItems.forEach((item) => {
+                        const checkbox = item.querySelector('input[name="vouchers"]');
+
+                        if (checkbox.checked) {
+                            checkbox.checked = false;
+                            checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                            deselectedCount++;
+                        }
+                    });
+
+                    showNotification(`Deselected ${deselectedCount} voucher(s)`, 'info');
+                }
+
+                function showNotification(message, type = 'info') {
+                    const notification = document.createElement('div');
+                    notification.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-md text-sm font-medium ${
+                        type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-400/10 dark:text-green-400' :
+                        type === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-400/10 dark:text-yellow-400' :
+                        'bg-blue-100 text-blue-800 dark:bg-blue-400/10 dark:text-blue-400'
+                    }`;
+                    notification.textContent = message;
+
+                    document.body.appendChild(notification);
+
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 3000);
+                }
+
+                // Add event listeners
+                if (finalSelectAllBtn) {
+                    finalSelectAllBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        selectAllVisible();
+                    });
+                }
+
+                if (finalDeselectAllBtn) {
+                    finalDeselectAllBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        deselectAll();
+                    });
+                }
+            };
         </script>
     </body>
 </html>

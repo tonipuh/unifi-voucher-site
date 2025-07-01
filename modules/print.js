@@ -47,7 +47,7 @@ module.exports = {
 
             const doc = new PDFDocument({
                 bufferPages: true,
-                size: [226.77165354330398, size(vouchers[0])],
+                size: typeof variables.paperSize === 'number' ? [variables.paperSize, size(vouchers[0])] : variables.paperSize,
                 margins : {
                     top: 20,
                     bottom: 20,
@@ -70,7 +70,7 @@ module.exports = {
             for(let item = 0; item < vouchers.length; item++) {
                 if(item > 0) {
                     doc.addPage({
-                        size: [226.77165354330398, size(vouchers[item])],
+                        size: typeof variables.paperSize === 'number' ? [variables.paperSize, size(vouchers[item])] : variables.paperSize,
                         margins : {
                             top: 20,
                             bottom: 20,
@@ -79,7 +79,15 @@ module.exports = {
                         }
                     });
 
-                    doc.moveDown(1);
+                    // Reset cursor position to top of new page
+                    doc.y = doc.page.margins.top;
+                    doc.moveTo(doc.page.margins.left, doc.page.margins.top);
+                    doc.moveDown(0);
+                    doc.text('', { continued: false });
+                    doc.font('Roboto-Regular');
+                    doc.fontSize(10);
+                    doc.text('', { continued: false });
+                    doc.text('', { continued: false });
                 }
 
                 doc.image('public/images/logo_grayscale_dark.png', 75, 15, {

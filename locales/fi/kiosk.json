@@ -1,0 +1,17 @@
+{
+  "title": "WiFi-voucher",
+  "generate": "Luo WiFi-voucher",
+  "generating": "Luodaan voucheria",
+  "use": "Käytä tätä koodia yhdistäessäsi",
+  "connect": "Yhdistä verkkoon",
+  "password": "Salasana",
+  "or": "tai",
+  "scan": "Skannaa yhdistääksesi",
+  "email": "Lähetä voucher sähköpostilla",
+  "optional": "valinnainen",
+  "enterEmail": "Syötä sähköpostiosoitteesi",
+  "send": "Lähetä voucher",
+  "sending": "Lähetetään sähköpostia",
+  "sent": "Sähköposti lähetetty",
+  "back": "Takaisin"
+}
