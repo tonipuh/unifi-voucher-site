@@ -14,3 +14,8 @@ public/dist/
 
 # Local config
 .options.json
+
+# Environment files
+.env
+.env.production
+.env.local

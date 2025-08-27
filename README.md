@@ -16,7 +16,8 @@ UniFi Voucher Site is a web-based platform for generating and managing UniFi net
 - **Docker Support**: Easily deploy using Docker, with customizable environment settings.
 - **Home Assistant Add-on**: Seamlessly integrate with Home Assistant for centralized management.
 - **Receipt Printing**: Supports printing vouchers with 80mm thermal printers. Via compatible PDFs and/or ESC/POS enabled network printers.
-- **Bulk Printing**: Export/print multiple Vouchers in one go.
+- **Bulk Printing**: Export/print multiple vouchers in one go with note-based filtering and bulk selection tools.
+- **Note Management**: Filter and organize vouchers by notes for easier management and bulk operations.
 - **Email Functionality**: Automatically send vouchers via SMTP.
 - **Localized Email/Print Templates** Fully localized templates, with support for multiple languages.
 - **Scan to Connect QR Codes** Quickly connect users via a phone's camera. (Available within Email and Print Layouts)
@@ -544,6 +545,37 @@ Once the SMTP environment variables are configured, the email feature will be av
 ### Example Email
 
 ![Example Email](.docs/images/email_example.png)
+
+## Bulk Printing Functionality
+
+The UniFi Voucher Site includes enhanced bulk printing capabilities that allow you to efficiently manage and print multiple vouchers simultaneously. This feature is particularly useful for businesses that need to prepare vouchers in bulk for events, guests, or specific groups.
+
+### Note-Based Filtering
+
+The application now supports voucher organization through notes, enabling you to:
+
+- **Filter vouchers by notes**: Easily locate vouchers that belong to specific groups or events
+- **Bulk selection**: Select vouchers based on their associated notes for batch operations
+- **Organized management**: Keep vouchers organized by purpose, event, or customer group
+
+![Note Filter List](.docs/images/Note-list.png)
+
+### Bulk Selection Tools
+
+The bulk printing interface includes convenient selection tools:
+
+- **Select All**: Quickly select all vouchers in the current view or filter
+- **Deselect All**: Clear all selections with a single click
+- **Note-filtered selection**: When filtering by notes, bulk select only affects vouchers matching the current filter
+
+### Usage
+
+1. **Filter by Notes**: Use the note filter to display vouchers with specific notes
+2. **Select Vouchers**: Choose individual vouchers or use "Select All" for bulk selection
+3. **Bulk Print**: Print all selected vouchers in a single operation
+4. **Manage Selection**: Use "Deselect All" to clear selections when needed
+
+This enhanced workflow significantly improves efficiency when managing large numbers of vouchers, making it easier to organize printing tasks by event, customer group, or any other classification system you use.
 
 ## Kiosk Functionality
 
